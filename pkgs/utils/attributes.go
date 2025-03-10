@@ -44,9 +44,9 @@ func removeStyle(element js.Value, name string) {
 }
 
 func setAttribute(element js.Value, name string, value string) {
-	if value == "" {
-		removeAttribute(element, name)
-	}
+	// if value == "" {
+	// 	removeAttribute(element, name)
+	// }
 	if strings.HasPrefix(name, "data-") {
 		element.Call("setAttribute", name, value)
 	} else {
