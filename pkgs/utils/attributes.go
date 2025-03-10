@@ -19,6 +19,9 @@ func SetAttributes(element js.Value, attributes types.Attributes[string]) {
 	if styleName, ok := attributes["style"]; ok {
 		setStyle(element, styleName, "")
 	}
+	for key, value := range otherAttrs {
+		setAttribute(element, key, value.(string))
+	}
 }
 func setClass[T string | []string](element js.Value, className T) {
 	switch any(className).(type) {
@@ -37,21 +40,19 @@ func setStyle(element js.Value, name, value string) {
 }
 
 func removeStyle(element js.Value, name string) {
-	element.Get("style").Set(name, js.Null)
+	element.Get("style").Set(name, js.Null())
 }
 
-func setAttribute[T string | js.Value](element js.Value, name string, value T) {
-
-	switch val := any(value).(type) {
-	case string:
-		if strings.HasPrefix(name, "data-") {
-			element.Call("setAttribute", name, val)
-		} else {
-			element.Set(name, val)
-		}
-	case js.Value:
+func setAttribute(element js.Value, name string, value string) {
+	if value == "" {
 		removeAttribute(element, name)
 	}
+	if strings.HasPrefix(name, "data-") {
+		element.Call("setAttribute", name, value)
+	} else {
+		element.Set(name, value)
+	}
+
 }
 
 func removeAttribute(element js.Value, name string) {
